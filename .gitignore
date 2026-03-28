@@ -1,6 +1,11 @@
 # Development folder (Claude config source - not deployed)
 development/
 
+# Claude Code configuration
+.claude/
+CLAUDE.md
+docs/
+
 # Python
 __pycache__/
 *.py[cod]
