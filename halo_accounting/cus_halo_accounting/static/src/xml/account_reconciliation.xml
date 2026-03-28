@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- ================================================================
+         DoneMessage  –  shown in a dialog when all lines are reconciled
+         ================================================================ -->
+    <t t-name="cus_halo_accounting.DoneMessage">
+        <div class="done_message p-3">
+            <h2>Congrats, you're all done!</h2>
+            <p>
+                You reconciled
+                <strong><t t-esc="props.number"/></strong>
+                transaction<t t-if="props.number != 1">s</t>
+                in <strong><t t-esc="props.duration"/></strong>.
+                <t t-if="props.number > 1">
+                    <br/>
+                    That's on average <strong><t t-esc="props.timePerTransaction"/></strong>
+                    seconds per transaction.
+                </t>
+            </p>
+            <t t-if="props.context and props.context.active_model">
+                <p t-if="props.context.active_model == 'account.journal'
+                          or props.context.active_model == 'account.bank.statement'
+                          or props.context.active_model == 'account.bank.statement.import'"
+                   class="actions_buttons d-flex gap-2 mt-3">
+                    <t t-if="props.context.journal_id">
+                        <button class="btn btn-secondary"
+                                t-on-click="() => this.handleGoTo({target:{dataset:{journalId: props.context.journal_id}}})">
+                            Go to Bank Statement(s)
+                        </button>
+                    </t>
+                    <t t-if="props.bank_statement_id">
+                        <button class="btn btn-primary"
+                                t-on-click="() => this.handleClose()">
+                            Close Statement
+                        </button>
+                    </t>
+                </p>
+            </t>
+        </div>
+    </t>
+
+    <!-- ================================================================
+         StatementAction  –  top-level action wrapper (minimal shell;
+         concrete view is supplied by base module)
+         ================================================================ -->
+    <t t-name="cus_halo_accounting.StatementAction">
+        <div class="o_reconciliation_action">
+            <t t-slot="default"/>
+        </div>
+    </t>
+
+    <!-- ================================================================
+         LineRenderer  –  single reconciliation line
+         ================================================================ -->
+    <t t-name="cus_halo_accounting.LineRenderer">
+        <div class="o_reconciliation_line" t-att-data-handle="props.handle">
+
+            <!-- Statement line info -->
+            <div class="o_reconcile_line_header row g-0 mb-2">
+                <div class="col">
+                    <span class="fw-bold" t-esc="props.state and props.state.st_line and props.state.st_line.name"/>
+                </div>
+                <div class="col-auto text-end">
+                    <span t-esc="props.state and props.state.st_line and props.state.st_line.amount_str"/>
+                </div>
+            </div>
+
+            <!-- Existing reconciliation propositions -->
+            <t t-if="props.state and props.state.reconciliation_proposition">
+                <div class="o_reconciliation_propositions">
+                    <t t-foreach="props.state.reconciliation_proposition" t-as="prop" t-key="prop.id">
+                        <div class="mv_line d-flex align-items-center mb-1"
+                             t-att-data-line-id="prop.id">
+                            <span class="flex-grow-1" t-esc="prop.name"/>
+                            <span class="me-2" t-esc="prop.amount_str"/>
+                            <button class="btn btn-sm btn-outline-danger"
+                                    t-on-click="(ev) => this.handleRemoveProposition({detail:{moveLineId: prop.id}})">
+                                ✕
+                            </button>
+                        </div>
+                    </t>
+                </div>
+            </t>
+
+            <!-- Balance -->
+            <t t-if="props.state and props.state.balance and props.state.balance.show_balance">
+                <div class="o_balance_line d-flex justify-content-between border-top pt-1 mt-1">
+                    <span class="text-muted small">Balance</span>
+                    <span class="fw-bold"
+                          t-att-class="props.state.balance.type > 0 ? 'text-success' : 'text-danger'"
+                          t-esc="props.state.balance.amount_str"/>
+                </div>
+            </t>
+
+            <!-- Action buttons -->
+            <div class="o_reconcile_buttons mt-2 d-flex gap-2">
+                <button t-if="props.state and props.state.balance and props.state.balance.type > 0"
+                        class="o_reconcile btn btn-primary btn-sm"
+                        t-on-click="(ev) => this.onValidate(ev)">
+                    Validate
+                </button>
+                <button t-if="not (props.state and props.state.balance and props.state.balance.type > 0)"
+                        class="btn btn-secondary btn-sm"
+                        disabled="1">
+                    Validate
+                </button>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

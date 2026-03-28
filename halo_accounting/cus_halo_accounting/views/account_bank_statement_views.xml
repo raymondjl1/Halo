@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         Account Bank Statement Line – Form View
+         (Reconciliation widget view used during the reconciliation flow)
+         ================================================================ -->
+    <record id="view_bank_reconcile_widget_form" model="ir.ui.view">
+        <field name="name">account.bank.statement.line.view.form.halo</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form class="form_bank container-fluid p-3">
+
+                <!-- Hidden fields needed for conditional visibility -->
+                <field name="to_check"   invisible="1"/>
+                <field name="state"      invisible="1"/>
+                <field name="bank_state" invisible="1"/>
+
+                <!-- Header buttons -->
+                <div class="o_bank_reconcile_stats_buttons row mb-3">
+                    <div class="o_statusbar_buttons o_bank_reconcile_status_buttons_aside_left col-auto">
+
+                        <!-- Validate (enabled only when state is 'valid') -->
+                        <button name="button_validation"
+                                string="Validate"
+                                type="object"
+                                class="btn btn-primary"
+                                id="validationButton"
+                                invisible="bank_state != 'valid'"/>
+
+                        <!-- Greyed-out Validate when state is 'invalid' -->
+                        <button string="Validate"
+                                class="btn btn-secondary text-muted"
+                                invisible="bank_state != 'invalid'"/>
+
+                        <!-- Reset / Unreconcile -->
+                        <button name="button_reset"
+                                string="Reset"
+                                type="object"
+                                invisible="bank_state != 'reconciled'"/>
+
+                        <!-- To Check / Set as Checked -->
+                        <button name="button_to_check"
+                                string="To Check"
+                                type="object"
+                                class="btn btn-secondary"
+                                invisible="to_check == True"/>
+                        <button name="button_set_as_checked"
+                                string="Set as Checked"
+                                type="object"
+                                invisible="to_check == False"/>
+
+                    </div>
+
+                    <!-- Reconciliation model quick-select area -->
+                    <div class="bank_reconcile_models col-auto ms-auto"
+                         invisible="bank_state not in ('valid','invalid')"/>
+                </div>
+
+                <!-- Main reconciliation widget -->
+                <field name="lines_widget"
+                       widget="bank_reconcile_widget_lines_widget"
+                       class="row w-100"/>
+
+                <!-- Tabs -->
+                <notebook name="bank_reconcile_widget_notebook" class="mt-3">
+
+                    <!-- Match existing entries -->
+                    <page string="Match Existing Entries"
+                          invisible="bank_state == 'reconciled'">
+                        <widget name="form_list_view" resModel="account.move.line"/>
+                    </page>
+
+                    <!-- Manual operations -->
+                    <page name="manual_operations"
+                          string="Manual Operations"
+                          invisible="bank_state == 'reconciled'">
+                        <group>
+                            <field name="partner_id"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="account_id"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   domain="[('deprecated', '=', False)]"/>
+                        </group>
+                    </page>
+
+                </notebook>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Account Bank Statement – List View (with reconciliation grouping)
+         ================================================================ -->
+    <record id="view_bank_statement_tree_halo" model="ir.ui.view">
+        <field name="name">account.bank.statement.list.halo</field>
+        <field name="model">account.bank.statement</field>
+        <field name="inherit_id" ref="account.view_bank_statement_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <!-- Group by reconciliation status so unreconciled appear first -->
+                <attribute name="default_group_by">reconciliation_status</attribute>
+                <attribute name="default_order">reconciliation_status asc</attribute>
+                <attribute name="decoration-success">reconciliation_status == 'reconciled'</attribute>
+                <attribute name="decoration-warning">reconciliation_status == 'not_reconciled'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Account Bank Statement – Form View (add reconciliation fields)
+         ================================================================ -->
+    <record id="view_bank_statement_form_halo" model="ir.ui.view">
+        <field name="name">account.bank.statement.form.halo</field>
+        <field name="model">account.bank.statement</field>
+        <field name="inherit_id" ref="account.view_bank_statement_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add reconciliation status badge near the top -->
+            <xpath expr="//sheet/group[1]" position="before">
+                <div class="o_field_widget mb-2">
+                    <field name="reconciliation_status"
+                           widget="badge"
+                           decoration-success="reconciliation_status == 'reconciled'"
+                           decoration-warning="reconciliation_status == 'not_reconciled'"/>
+                    <field name="all_lines_reconciled" invisible="1"/>
+                </div>
+            </xpath>
+
+            <!-- Add Unreconcile button on each statement line in the list -->
+            <xpath expr="//field[@name='line_ids']/list" position="inside">
+                <field name="is_reconciled"   column_invisible="True" default="0"/>
+                <field name="bank_state"      column_invisible="True"/>
+                <field name="journal_id"      column_invisible="True" force_save="1"/>
+                <field name="currency_id"     column_invisible="True" force_save="1"/>
+                <field name="company_id"      column_invisible="True" force_save="1"/>
+                <button name="button_reset"
+                        string="Unreconcile"
+                        type="object"
+                        class="btn btn-sm btn-danger"
+                        invisible="not is_reconciled"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================
+
+

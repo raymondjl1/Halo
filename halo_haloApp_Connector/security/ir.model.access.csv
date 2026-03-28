@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_halo_user_groups_user,halo.user.groups.user,model_halo_cus_application_user_groups,base.group_user,1,1,1,1
+access_halo_subscriptions_user,halo.subscriptions.user,model_halo_cus_subscriptions,base.group_user,1,1,1,1
+access_halo_app_updates_user,halo.app.updates.user,model_halo_cus_app_updates,base.group_user,1,1,1,1

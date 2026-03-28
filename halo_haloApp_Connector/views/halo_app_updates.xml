@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions -->
+    <record id="action_halo_app_updates" model="ir.actions.act_window">
+        <field name="name">App Updates</field>
+        <field name="res_model">halo.cus.app.updates</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>Create your first app update.</p>
+        </field>
+    </record>
+
+    <!-- App Updates Views -->
+    <record id="view_halo_app_updates_list" model="ir.ui.view">
+        <field name="name">halo.cus.app.updates.list</field>
+        <field name="model">halo.cus.app.updates</field>
+        <field name="arch" type="xml">
+            <list editable="top" create="1" delete="1" multi_edit="1" string="App Updates" open_form_view="True">               
+                <field name="name"/>
+                <field name="version"/>
+                <field name="date_available" widget="date"/>
+                
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_halo_app_updates_form" model="ir.ui.view">
+        <field name="name">halo.cus.app.updates.form</field>
+        <field name="model">halo.cus.app.updates</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="version"/>
+                        <field name="date_available" widget="date"/>
+                        <field name="update_file" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="download_url" widget="url"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Menu Items -->
+    <menuitem id="menu_halo_app_updates"
+              name="Software Updates"
+              parent="menu_halo_root"
+              action="action_halo_app_updates"
+              sequence="30"/>
+
+
+</odoo>

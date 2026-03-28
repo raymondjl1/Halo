@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         Financial Reports menu hierarchy
+         ================================================================
+         Places Profit & Loss and Balance Sheet under a dedicated
+         "Financial Reports" sub-menu inside Generic Statements,
+         ensuring they appear before other items (sequence=0).
+         ================================================================ -->
+
+    <!-- Parent submenu inside Generic Statements -->
+    <menuitem id="menu_financial_reports_halo"
+              name="Financial Reports"
+              parent="base_accounting_kit.account_reports_generic_statements"
+              sequence="0"/>
+
+    <!-- Profit and Loss action -->
+    <record id="action_profit_and_loss_report_halo" model="ir.actions.act_window">
+        <field name="name">Profit and Loss</field>
+        <field name="res_model">financial.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base_accounting_kit.financial_report_view_form"/>
+        <field name="target">new</field>
+        <field name="context"
+               eval="{'default_account_report_id': ref('base_accounting_kit.account_financial_report_profitandloss0')}"/>
+    </record>
+
+    <!-- Balance Sheet action -->
+    <record id="action_balance_sheet_report_halo" model="ir.actions.act_window">
+        <field name="name">Balance Sheet</field>
+        <field name="res_model">financial.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base_accounting_kit.financial_report_view_form"/>
+        <field name="target">new</field>
+        <field name="context"
+               eval="{'default_account_report_id': ref('base_accounting_kit.account_financial_report_balancesheet0')}"/>
+    </record>
+
+    <!-- Profit and Loss menu item -->
+    <menuitem id="menu_profit_and_loss_halo"
+              name="Profit and Loss"
+              parent="menu_financial_reports_halo"
+              action="action_profit_and_loss_report_halo"
+              sequence="1"/>
+
+    <!-- Balance Sheet menu item -->
+    <menuitem id="menu_balance_sheet_halo"
+              name="Balance Sheet"
+              parent="menu_financial_reports_halo"
+              action="action_balance_sheet_report_halo"
+              sequence="2"/>
+
+</odoo>

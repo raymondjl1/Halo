@@ -1,0 +1,18 @@
+<odoo>
+    <record id="view_product_template_form_halo_subscription" model="ir.ui.view">
+        <field name="name">product.template.form.halo.subscription</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Subscription">
+                    <group>
+                        <field name="halo_subscription"/>
+                        <field name="expires_in_days"/>
+                        <field name="group_type_id"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

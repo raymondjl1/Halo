@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions -->
+   
+
+    <!-- Menu Items -->
+    <menuitem id="menu_halo_root" 
+              name="Halo App" 
+              web_icon="cus_HALO_haloApp_Connector,static/description/icon.png"
+              sequence="10"/>
+    <!-- create main menu parent items here, reference in item xml files-->
+    
+</odoo>

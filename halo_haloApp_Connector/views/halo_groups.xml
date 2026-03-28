@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions -->
+    <record id="action_halo_user_groups" model="ir.actions.act_window">
+        <field name="name">User Groups</field>
+        <field name="res_model">halo.cus.application.user.groups</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>Create your first user group.</p>
+        </field>
+    </record>
+
+    <!-- User Groups Views -->
+    <record id="view_halo_user_groups_list" model="ir.ui.view">
+        <field name="name">halo.cus.application.user.groups.list</field>
+        <field name="model">halo.cus.application.user.groups</field>
+        <field name="arch" type="xml">
+            <list editable="top" create="1" delete="1" multi_edit="1" string="User Groups" open_form_view="True">
+                <field name="name" string="Group Name"/>
+                <field name="description" string="Description"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_halo_user_groups_form" model="ir.ui.view">
+        <field name="name">halo.cus.application.user.groups.form</field>
+        <field name="model">halo.cus.application.user.groups</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Menu Items -->
+    <menuitem id="menu_halo_user_groups"
+              name="User Groups"
+              parent="menu_halo_root"
+              action="action_halo_user_groups"
+              sequence="10"/>
+
+</odoo>
